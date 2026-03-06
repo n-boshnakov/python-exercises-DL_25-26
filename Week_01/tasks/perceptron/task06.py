@@ -1,21 +1,25 @@
 import numpy as np
 
-def initialize_weights(x, y):
-    return np.random.uniform(x, y)
+try:
+    from . import task05
+except ImportError:
+    import task05
 
 class PerceptronMul():
     def __init__(self, inputs):
         self.inputs = inputs
         self.weight = []
+        self.bias = task05.initialize_weights(0, 10)
         for n in range(self.inputs):
-            self.weight.append(initialize_weights(0, 10))
+            self.weight.append(task05.initialize_weights(0, 10))
 
     def return_result(self, x):
         total_weight = 0
         for n in range(self.inputs):
             w = x[n] * self.weight[n]
             total_weight += w
-        return total_weight
+        return total_weight + self.bias
+
 
 def finite_difference_derivative_mul(w, dataset, eps=1e-5):
     gradients = []
@@ -33,6 +37,15 @@ def finite_difference_derivative_mul(w, dataset, eps=1e-5):
         grad_i = (loss2 - loss1) / eps
         gradients.append(grad_i)
 
+    original_bias = w.bias
+
+    loss1 = calculate_loss_mul(w, dataset)
+    w.bias = original_bias + eps
+    loss2 = calculate_loss_mul(w, dataset)
+    w.bias = original_bias
+
+    gradients.append((loss2 - loss1) / eps)
+
     return gradients
 
 def calculate_loss_mul(w, dataset):
@@ -44,10 +57,14 @@ def calculate_loss_mul(w, dataset):
 
 def single_step(w, dataset, learning_rate=1):
     print(f"loss before: {calculate_loss_mul(w, dataset)}")
+
     grads = finite_difference_derivative_mul(w, dataset)
 
-    for i in range(w.inputs):
-        w.weight[i] -= learning_rate * grads[i]
+    for n in range(w.inputs):
+        w.weight[n] -= learning_rate * grads[n]
+
+    # update bias
+    w.bias -= learning_rate * grads[-1]
 
     print(f"loss after: {calculate_loss_mul(w, dataset)}")
 
@@ -60,7 +77,6 @@ def main():
     AND_dataset = {(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)}
     OR_dataset = {(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)}
     
-    # each perceptron has 2 parameters
     model_AND = PerceptronMul(2)
 
     model_OR = PerceptronMul(2)
@@ -79,6 +95,6 @@ def main():
     print(f"OR for 1 and 0: {model_OR.return_result([1, 0])}")
     print(f"OR for 0 and 0: {model_OR.return_result([0, 0])}")
 
-    # the values the models return are around 0 and 1, close to the answers, but do not predict them exactly
+    # Now the values are much closer to the expected 
 if __name__ == "__main__":
     main()
