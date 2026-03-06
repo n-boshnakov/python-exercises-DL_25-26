@@ -13,8 +13,10 @@ def climb_fall_chance(curr_step):
     else:
         return task03.empire_state_climb_fixed(curr_step)
 
-
-if __name__ == '__main__':
+def main():
     walks_list = task05.multiple_walks(100, 20, climb_fall_chance)
     print(task05.multiple_walks(100, 1, climb_fall_chance))
     task06.steps_line_plot_multiple(walks_list)
+
+if __name__ == '__main__':
+    main()

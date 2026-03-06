@@ -13,7 +13,7 @@ def perform_steps_times(curr_step, times, fun):
     return steps_list
 
 
-if __name__ == '__main__':
+def main():
     curr_step = 0
     steps_list = perform_steps_times(curr_step, 100, task01.empire_state_climb)
 
@@ -29,3 +29,6 @@ if __name__ == '__main__':
     of rolling a number are not truly equal.
     
     Could also be that we can take a step down when at 0 steps, resulting in a negative step..."""
+
+if __name__ == '__main__':
+    main()

@@ -17,5 +17,8 @@ def estimate_chances(tries, fun):
     plt.xticks([0, 20, 40, 60, 80, 100, 120], ["0", "20", "40", "60", "80", "100", "120"])
     plt.show()
 
-if __name__ == '__main__':
+def main():
     estimate_chances(500, task07.climb_fall_chance)
+    
+if __name__ == '__main__':
+    main()

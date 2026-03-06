@@ -12,8 +12,10 @@ def multiple_walks(steps, times, fun):
 
     return all_walks
 
-
-if __name__ == '__main__':
+def main():
     all_walks = multiple_walks(100, 5, task03.empire_state_climb_fixed)
 
     print(all_walks)
+
+if __name__ == '__main__':
+    main()

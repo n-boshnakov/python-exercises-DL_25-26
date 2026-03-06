@@ -22,7 +22,13 @@ def steps_line_plot(list_steps):
     plt.plot(list_rolls, list_steps)
     return plt
 
+def main():
+    steps_line_plot(
+            task02.perform_steps_times(0, 100,
+                                    task03.empire_state_climb_fixed)).show()
+    # Even though I couldn't reach the desired line plot visualization, I believe that my line plot depicts the results from task03 faithfully, as can be seen in the beginning, where the steps taken are 0, 0, 1. In the desired visualization it appears that there is an immediate jump to a step above 1
+
 
 if __name__ == '__main__':
-    steps_line_plot(task02.perform_steps_times(0, 100, task03.empire_state_climb_fixed)).show()
-# Even though I couldn't reach the desired line plot visualization, I believe that my line plot depicts the results from task03 faithfully, as can be seen in the beginning, where the steps taken are 0, 0, 1. In the desired visualization it appears that there is an immediate jump to a step above 1
+    main()
+    

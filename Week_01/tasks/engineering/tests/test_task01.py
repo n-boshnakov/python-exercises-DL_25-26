@@ -14,7 +14,7 @@ class TestTask01(unittest.TestCase):
         curr_step_first = curr_step
         curr_step = task01.empire_state_climb(curr_step)
         # print(f"{curr_step} is not equal to {curr_step_first}: {curr_step != curr_step_first}")
-        return self.assertTrue(curr_step != curr_step_first)
+        self.assertTrue(curr_step != curr_step_first)
     
     def test_when_climb_then_correct_step_added(self):
         # first 10 numbers generated with seed = 123:
@@ -24,7 +24,7 @@ class TestTask01(unittest.TestCase):
         for n in range(9):
             curr_step = task01.empire_state_climb(curr_step)
         
-        return self.assertTrue(curr_step == 50)
+        self.assertEqual(curr_step, 50)
 
 
 if __name__ == "__main__":

@@ -24,8 +24,13 @@ def empire_state_climb_fixed(curr_step):
     )
     return curr_step
 
-if __name__ == '__main__':
+
+def main():
     curr_step = 0
-    steps_list = task02.perform_steps_times(curr_step, 100, empire_state_climb_fixed)
+    steps_list = task02.perform_steps_times(curr_step, 100,
+                                            empire_state_climb_fixed)
 
     print(steps_list)
+
+if __name__ == '__main__':
+    main()

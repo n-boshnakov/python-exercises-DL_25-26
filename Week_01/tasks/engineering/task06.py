@@ -23,7 +23,9 @@ def steps_line_plot_multiple(walks_list):
     plt.show()
     return True
 
-
-if __name__ == '__main__':
+def main():
     walks_list = task05.multiple_walks(100, 5, task03.empire_state_climb_fixed)
     steps_line_plot_multiple(walks_list)
+    
+if __name__ == '__main__':
+    main()

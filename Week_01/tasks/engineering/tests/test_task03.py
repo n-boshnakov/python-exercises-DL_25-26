@@ -9,7 +9,7 @@ class TestTask03(unittest.TestCase):
         rolls = 10
         for n in range(10):
             min_values.append(min(task02.perform_steps_times(0, rolls, task03.empire_state_climb_fixed)))
-        return self.assertTrue(min(min_values) >= 0)
+        self.assertTrue(min(min_values) >= 0)
 
 if __name__ == "__main__":
     unittest.main()

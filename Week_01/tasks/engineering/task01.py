@@ -19,9 +19,7 @@ def empire_state_climb(curr_step):
     print(f"Before throw step = {before_step}\nAfter throw dice = {rand}\nAfter throw step = {curr_step}")
     return curr_step
 
-
-
-if __name__ == '__main__':
+def main():
        
     print(f"Random float: {rng.random()}")
     print(f"Random integer 1: {d6_roll()}")
@@ -38,3 +36,5 @@ if __name__ == '__main__':
     # After throw dice = 6
     # After throw step = 52
 
+if __name__ == '__main__':
+    main()
