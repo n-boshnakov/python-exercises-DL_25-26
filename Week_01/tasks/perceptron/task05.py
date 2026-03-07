@@ -60,7 +60,7 @@ def main():
     AND_dataset = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
     OR_dataset = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
     
-    # each perceptron has 2 parameters
+    # each perceptron has 2 parameters -> the weights
     model_AND = PerceptronMul(2)
 
     model_OR = PerceptronMul(2)

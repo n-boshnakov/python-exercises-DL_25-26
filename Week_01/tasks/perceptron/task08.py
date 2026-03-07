@@ -20,7 +20,7 @@ def calculate_loss_mul_sigmoid(w, dataset):
     for data in dataset:
         curr_e = (data[-1] - w.return_result(data)) ** 2
         MSE += curr_e
-    return MSE / len(dataset)
+    return float(MSE / len(dataset))
 
 def finite_difference_derivative_mul_sigmoid(w, dataset, eps=1e-5):
     gradients = []
@@ -52,7 +52,7 @@ def finite_difference_derivative_mul_sigmoid(w, dataset, eps=1e-5):
 def train_for_epochs_loss_record(w, epochs, dataset,  fun, learning_rate = 1):
     loss_history = []
     for n in range(epochs):
-        loss_history.append(float(fun(w, dataset, learning_rate)))
+        loss_history.append(fun(w, dataset, learning_rate))
     return w, loss_history
 
 def single_step_sigmoid(w, dataset, learning_rate=1):
@@ -88,7 +88,7 @@ def main():
 
     loss_hist_AND = train_for_epochs_loss_record(model_AND_sigmoid, 100000, AND_dataset, single_step_sigmoid, 0.1)[1]
     loss_hist_OR = train_for_epochs_loss_record(model_OR_sigmoid, 100000, OR_dataset, single_step_sigmoid, 0.1)[1]
-    print(loss_hist_AND)
+
     # tests
     print(f"AND for 1 and 1: {model_AND_sigmoid.return_result([1, 1])}")
     print(f"AND for 0 and 1: {model_AND_sigmoid.return_result([0, 1])}")
@@ -101,6 +101,19 @@ def main():
     print(f"OR for 1 and 0: {model_OR_sigmoid.return_result([1, 0])}")
     print(f"OR for 0 and 0: {model_OR_sigmoid.return_result([0, 0])}")
     plot(epochs, loss_hist_OR)
+
+    # Result:
+    """
+    AND for 1 and 1: 0.972004012393997
+    AND for 0 and 1: 0.023605103518596706
+    AND for 1 and 0: 0.023605075201399338
+    AND for 0 and 0: 1.683374358602646e-05
+    OR for 1 and 1: 0.9999986179616207
+    OR for 0 and 1: 0.9864879046325283
+    OR for 1 and 0: 0.9943178294398299
+    OR for 0 and 0: 0.01735000421397507
+    """
+    # when compared with task06, the values are much closer to the expected ones.
 
 if __name__ == "__main__":
     main()

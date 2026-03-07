@@ -79,8 +79,8 @@ def main():
 
     model_OR = PerceptronMul(2)
 
-    train_for_epochs(model_AND, 100000, AND_dataset, single_step, 0.01,)
-    train_for_epochs(model_OR, 100000, OR_dataset, single_step, 0.01)
+    train_for_epochs(model_AND, 100000, AND_dataset, single_step, 0.1,)
+    train_for_epochs(model_OR, 100000, OR_dataset, single_step, 0.1)
 
     # tests
     print(f"AND for 1 and 1: {model_AND.return_result([1, 1])}")
@@ -92,6 +92,18 @@ def main():
     print(f"OR for 0 and 1: {model_OR.return_result([0, 1])}")
     print(f"OR for 1 and 0: {model_OR.return_result([1, 0])}")
     print(f"OR for 0 and 0: {model_OR.return_result([0, 0])}")
+
+    # Results:
+    """
+    AND for 1 and 1: 0.749995000000325
+    AND for 0 and 1: 0.2499949999992475
+    AND for 1 and 0: 0.24999500000144592
+    AND for 0 and 0: -0.25000499999963166
+    OR for 1 and 1: 1.2499949999968702
+    OR for 0 and 1: 0.7499950000010542
+    OR for 1 and 0: 0.7499950000014837
+    OR for 0 and 0: 0.24999500000566766
+    """
 
     # Now the values are much closer to the expected 
 if __name__ == "__main__":
