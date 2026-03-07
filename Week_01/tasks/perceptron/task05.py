@@ -57,16 +57,16 @@ def train_for_epochs(w, epochs, dataset, learning_rate = 1):
     return w
 
 def main():
-    AND_dataset = {(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)}
-    OR_dataset = {(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)}
+    AND_dataset = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
+    OR_dataset = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
     
     # each perceptron has 2 parameters
     model_AND = PerceptronMul(2)
 
     model_OR = PerceptronMul(2)
 
-    train_for_epochs(model_AND, 100000, AND_dataset, 0.001)
-    train_for_epochs(model_OR, 100000, OR_dataset, 0.001)
+    train_for_epochs(model_AND, 100000, AND_dataset, 0.01)
+    train_for_epochs(model_OR, 100000, OR_dataset, 0.01)
 
     # tests
     print(f"AND for 1 and 1: {model_AND.return_result([1, 1])}")
