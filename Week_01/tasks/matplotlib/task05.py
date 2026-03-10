@@ -20,7 +20,10 @@ class LifeExpColor(LifeExp):
 
         plt.show()
 
-if __name__ == '__main__':
+def main():
     life_exp_2007_color = LifeExpColor(gdp_cap_usd, life_exp_2007, pop, 2007, colors)
 
     life_exp_2007_color.scatter_plot_color()
+    
+if __name__ == '__main__':
+    main()

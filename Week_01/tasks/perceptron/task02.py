@@ -5,11 +5,11 @@ except ImportError:
     import task01
 
 def calculate_loss(w, dataset):
-    MSE = 0
+    mse = 0
     for data in dataset:
         curr_e = (data[1] - w.return_result(data[0])) ** 2
-        MSE += curr_e
-    return MSE / len(dataset)
+        mse += curr_e
+    return mse / len(dataset)
 
 class Perceptron():
     def __init__(self):
