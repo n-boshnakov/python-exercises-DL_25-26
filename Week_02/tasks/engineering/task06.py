@@ -12,18 +12,32 @@ def trace(value):
     #     value = value._prev
 
     # with help from Gemini
-    nodes = set()
+    # nodes = set()
+    # edges = []
+
+    # def build(v):
+    #     if v not in nodes:
+    #         nodes.add(v)
+    #         for child in v._prev:
+    #             edges.append((child, v))
+    #             build(child)
+
+    # build(value)
+
+    # version for task08
+    nodes = []
     edges = []
+    visited = set()
 
     def build(v):
-        if v not in nodes:
-            nodes.add(v)
-            for child in v._prev:
-                edges.append((child, v))
-                build(child)
+        if v not in visited:
+            visited.add(v)
+            for parent in v._prev:
+                edges.append((parent, v))
+                build(parent)
+            nodes.append(v)  # append AFTER children → topological order
 
     build(value)
-
     return nodes, edges
 
 def main() -> None:
