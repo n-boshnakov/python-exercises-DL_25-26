@@ -4,27 +4,22 @@ try:
 except ImportError:
     import task01
 
-def calculate_loss(w, dataset):
-    mse = 0
-    for data in dataset:
-        curr_e = (data[1] - w.return_result(data[0])) ** 2
-        mse += curr_e
-    return mse / len(dataset)
-
-class Perceptron():
-    def __init__(self):
-        self.weight = task01.initialize_weights(0, 10)
-
-    def return_result(self, x):
-        return x * self.weight
+def calculate_loss(w, dataset) -> float:
+    sum = 0
+    print(w)
+    for (x, y) in dataset:
+        print(sum)
+        sum += (x * w - y)**2
     
+    return sum / len(dataset)
+
 def main():
+    rng = np.random.default_rng(42)
     dataset = task01.create_dataset(6)
-    w = Perceptron()
+    w = rng.uniform(0, 10)
 
     loss = calculate_loss(w, dataset)
-
-    print(f'MSE: {loss}')
+    print(f'MSE: {loss}') 
 
 if __name__ == '__main__':
     main()
