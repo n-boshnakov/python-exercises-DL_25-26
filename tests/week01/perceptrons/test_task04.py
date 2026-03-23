@@ -1,6 +1,5 @@
 import unittest
-import numpy as np
-from Week_01.tasks.perceptron import task01, task02, task03, task04
+from Week_01.tasks.perceptron import task01, task04
 
 class TestEpochs(unittest.TestCase):
 

@@ -7,15 +7,17 @@ except ImportError:
 
 def calculate_derivative(w, dataset, eps=0.01) -> float:
     loss1 = task02.calculate_loss(w, dataset)
-    print(f"Loss before: {loss1}")
     loss2 = task02.calculate_loss(w + eps, dataset)
-    print(f"Loss after: {loss1 - ((loss2 - loss1) / eps)}")
+
+    print(f"Loss after: {(loss2 - loss1) / eps}")
 
     return (loss2 - loss1) / eps
 
 def single_step(w, dataset, learning_rate=1):
+    print(f"Loss before: {task02.calculate_loss(w, dataset)}")
     derivative = calculate_derivative(w, dataset)
     w -= derivative * learning_rate
+    print(f"Loss after: {task02.calculate_loss(w, dataset)}")
     return w
 
 

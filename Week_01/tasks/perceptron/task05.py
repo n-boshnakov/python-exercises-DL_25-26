@@ -1,84 +1,70 @@
 import numpy as np
+try:
+    from . import task01, task02, task03, task04
+except ImportError:
+    import task01, task02, task03, task04
 
-def initialize_weights(x, y):
-    return np.random.uniform(x, y)
 
-class PerceptronMul():
-    def __init__(self, inputs):
-        self.inputs = inputs
-        self.weight = []
-        for n in range(self.inputs):
-            self.weight.append(initialize_weights(0, 10))
+class Perceptron():
+    def __init__(self, w1=task01.initialize_weights(0, 10), w2=task01.initialize_weights(0, 10)):
+        self.w1 = w1
+        self.w2 = w2
 
-    def return_result(self, x):
-        total_weight = 0
-        for n in range(self.inputs):
-            w = x[n] * self.weight[n]
-            total_weight += w
-        return total_weight
+    def calc_loss(self, dataset, eps=0):
+        sum = 0
+        for (x, y, z) in dataset:
+            sum += ((x * (self.w1 + eps) + y * (self.w2 + eps)) - z)**2
+    
+        return sum / len(dataset)
+    
+    def calc_derivative(self, dataset, eps=0.01):
+        loss1 = self.calc_loss(dataset)
+        loss2 = self.calc_loss(dataset, eps)
 
-def finite_difference_derivative_mul(w, dataset, eps=1e-5):
-    gradients = []
+        return (loss2 - loss1) / eps
+    
+    def single_step(self, dataset, learning_rate):
+        print(f"Loss before: {self.calc_loss(dataset)}")
+        derivative = self.calc_derivative(dataset)
+        self.w1 -= derivative * learning_rate
+        self.w2 -= derivative * learning_rate
+        print(f"Loss after: {self.calc_loss(dataset)}")
+        return self.w1, self.w2
 
-    for n in range(w.inputs):
-        original_weight = w.weight[n]
+    def train(self, epochs, dataset, learning_rate=0.001):
+        for n in range(epochs):
+            self.single_step(dataset, learning_rate)
+            pass
 
-        loss1 = calculate_loss_mul(w, dataset)
-
-        w.weight[n] = original_weight + eps
-        loss2 = calculate_loss_mul(w, dataset)
-
-        w.weight[n] = original_weight
-
-        grad_i = (loss2 - loss1) / eps
-        gradients.append(grad_i)
-
-    return gradients
-
-def calculate_loss_mul(w, dataset):
-    MSE = 0
-    for data in dataset:
-        curr_e = (data[-1] - w.return_result(data)) ** 2
-        MSE += curr_e
-    return MSE / len(dataset)
-
-def single_step(w, dataset, learning_rate=1):
-    print(f"loss before: {calculate_loss_mul(w, dataset)}")
-    grads = finite_difference_derivative_mul(w, dataset)
-
-    for i in range(w.inputs):
-        w.weight[i] -= learning_rate * grads[i]
-
-    print(f"loss after: {calculate_loss_mul(w, dataset)}")
-
-def train_for_epochs(w, epochs, dataset, learning_rate = 1):
-    for n in range(epochs):
-        single_step(w, dataset, learning_rate)
-    return w
+    def guess(self, input1, input2):
+        return (self.w1*input1 + self.w2*input2)
 
 def main():
-    AND_dataset = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
-    OR_dataset = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
+    dataset_AND = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
+    dataset_OR = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
+    epochs = 100000
+    learning_rate = 0.001
+
+    perceptron_AND = Perceptron()
+    perceptron_OR = Perceptron()
     
-    # each perceptron has 2 parameters -> the weights
-    model_AND = PerceptronMul(2)
+    perceptron_AND.train(epochs, dataset_AND, learning_rate)
+    perceptron_OR.train(epochs, dataset_OR, learning_rate)
+    # General forms of the two models:
+    # each model has 2 parameters - its weights (one for each input)
 
-    model_OR = PerceptronMul(2)
+    print(f"AND for 1 and 1: {perceptron_AND.guess(1, 1)}")
+    print(f"AND for 0 and 1: {perceptron_AND.guess(0, 1)}")
+    print(f"AND for 1 and 0: {perceptron_AND.guess(1, 0)}")
+    print(f"AND for 0 and 0: {perceptron_AND.guess(0, 0)}")
 
-    train_for_epochs(model_AND, 100000, AND_dataset, 0.01)
-    train_for_epochs(model_OR, 100000, OR_dataset, 0.01)
+    print(f"OR for 1 and 1: {perceptron_OR.guess(1, 1)}")
+    print(f"OR for 0 and 1: {perceptron_OR.guess(0, 1)}")
+    print(f"OR for 1 and 0: {perceptron_OR.guess(1, 0)}")
+    print(f"OR for 0 and 0: {perceptron_OR.guess(0, 0)}")
 
-    # tests
-    print(f"AND for 1 and 1: {model_AND.return_result([1, 1])}")
-    print(f"AND for 0 and 1: {model_AND.return_result([0, 1])}")
-    print(f"AND for 1 and 0: {model_AND.return_result([1, 0])}")
-    print(f"AND for 0 and 0: {model_AND.return_result([0, 0])}")
+    # What do you notice about the confidence the models have in their predicted values?
 
-    print(f"OR for 1 and 1: {model_OR.return_result([1, 1])}")
-    print(f"OR for 0 and 1: {model_OR.return_result([0, 1])}")
-    print(f"OR for 1 and 0: {model_OR.return_result([1, 0])}")
-    print(f"OR for 0 and 0: {model_OR.return_result([0, 0])}")
 
-    # the values the models return are around 0 and 1, close to the answers, but do not predict them exactly
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
