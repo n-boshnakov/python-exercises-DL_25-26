@@ -1,8 +1,7 @@
-import numpy as np
 try:
-    from . import task01, task02, task03, task04
+    from . import task01
 except ImportError:
-    import task01, task02, task03, task04
+    import task01
 
 
 class Perceptron():

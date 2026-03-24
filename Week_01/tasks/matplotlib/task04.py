@@ -25,9 +25,9 @@ class LifeExp:
         plt.show()
 
 def main():
-    life_exp_2007 = LifeExp(gdp_cap_usd, life_exp_2007, pop, 2007)
+    life_exp_2007_plot = LifeExp(gdp_cap_usd, life_exp_2007, pop, 2007)
 
-    life_exp_2007.scatter_plot()
+    life_exp_2007_plot.scatter_plot()
     
 if __name__ == '__main__':
     main()

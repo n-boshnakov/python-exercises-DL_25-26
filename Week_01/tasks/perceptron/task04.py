@@ -1,8 +1,8 @@
 import numpy as np
 try:
-    from . import task01, task02, task03
+    from . import task01, task03
 except ImportError:
-    import task01, task02, task03
+    import task01, task03
 
 def run_for_epochs(num, w, dataset, learning_rate):
     w = 0

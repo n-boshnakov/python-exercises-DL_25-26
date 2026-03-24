@@ -1,119 +1,104 @@
-import numpy as np
 import matplotlib.pyplot as plt
-
 try:
-    from . import task06, task05
+    from . import task01, task06, task07
 except ImportError:
-    import task06, task05
+    import task01, task06, task07
 
-def sigmoid(x):
-    return 1/(1 + np.exp(-x))
 
-class PerceptronMulSigmoid(task06.PerceptronMul):
-    def return_result(self, x):
-        linear_result = super().return_result(x)
+class PerceptronSigmoid():
+    def __init__(self, w1=task01.initialize_weights(0, 10), w2=task01.initialize_weights(0, 10)):
+        self.w1 = w1
+        self.w2 = w2
+        self.bias = task01.initialize_weights(0, 1)
+        self.loss_list = []
 
-        return sigmoid(linear_result)
+    def calc_loss(self, dataset, eps=0):
+        sum = 0
+        for (x, y, z) in dataset:
+            sum += (task07.sigmoid((x * (self.w1 + eps) + y * (self.w2 + eps)) + self.bias) - z)**2
+    
+        return sum / len(dataset)
+    
+    def calc_derivative(self, dataset, eps=0.01):
+        loss1 = self.calc_loss(dataset)
+        loss2 = self.calc_loss(dataset, eps)
+        self.loss_list.append((loss2 - loss1) / eps)
 
-def calculate_loss_mul_sigmoid(w, dataset):
-    MSE = 0
-    for data in dataset:
-        curr_e = (data[-1] - w.return_result(data)) ** 2
-        MSE += curr_e
-    return float(MSE / len(dataset))
+        return (loss2 - loss1) / eps
+    
+    def single_step(self, dataset, learning_rate):
+        print(f"Loss before: {self.calc_loss(dataset)}")
+        derivative = self.calc_derivative(dataset)
+        self.w1 -= derivative * learning_rate
+        self.w2 -= derivative * learning_rate
+        print(f"Loss after: {self.calc_loss(dataset)}")
+        return self.w1, self.w2
 
-def finite_difference_derivative_mul_sigmoid(w, dataset, eps=1e-5):
-    gradients = []
+    def train(self, epochs, dataset, learning_rate=0.001):
+        for n in range(epochs):
+            self.single_step(dataset, learning_rate)
+            pass
 
-    for n in range(w.inputs):
-        original_weight = w.weight[n]
-
-        loss1 = calculate_loss_mul_sigmoid(w, dataset)
-
-        w.weight[n] = original_weight + eps
-        loss2 = calculate_loss_mul_sigmoid(w, dataset)
-
-        w.weight[n] = original_weight
-
-        grad_i = (loss2 - loss1) / eps
-        gradients.append(grad_i)
-
-    original_bias = w.bias
-
-    loss1 = calculate_loss_mul_sigmoid(w, dataset)
-    w.bias = original_bias + eps
-    loss2 = calculate_loss_mul_sigmoid(w, dataset)
-    w.bias = original_bias
-
-    gradients.append((loss2 - loss1) / eps)
-
-    return gradients
-
-def train_for_epochs_loss_record(w, epochs, dataset,  fun, learning_rate = 1):
-    loss_history = []
-    for n in range(epochs):
-        loss_history.append(fun(w, dataset, learning_rate))
-    return w, loss_history
-
-def single_step_sigmoid(w, dataset, learning_rate=1):
-    print(f"loss before: {calculate_loss_mul_sigmoid(w, dataset)}")
-
-    grads = finite_difference_derivative_mul_sigmoid(w, dataset)
-
-    for n in range(w.inputs):
-        w.weight[n] -= learning_rate * grads[n]
-
-    # update bias
-    w.bias -= learning_rate * grads[-1]
-
-    print(f"loss after: {calculate_loss_mul_sigmoid(w, dataset)}")
-    return calculate_loss_mul_sigmoid(w, dataset)
-
-def plot(x, y):
-    plt.plot(x, y)
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-    plt.xticks([10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000], ["10k", "20k", "30k", "40k", "50k", "60k", "70k", "80k", "90k", "100k"])
-    plt.title(f"Loss over epochs")
-    plt.show()
+    def guess(self, input1, input2):
+        sum = 0
+        sum += self.w1*input1 + self.bias
+        sum += self.w2*input2 + self.bias
+        return (task07.sigmoid((self.w1*input1 + self.w2*input2) + self.bias))
+    
+    def return_loss_list(self):
+        return self.loss_list
 
 def main():
-    AND_dataset = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
-    OR_dataset = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
+    dataset_AND = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
+    dataset_OR = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
+    epochs = 100000
+    learning_rate = 0.001
 
-    epochs = np.arange(start=0, stop=100000, step=1, dtype=None)
+    perceptron_AND_bias = task06.PerceptronBias()
+    perceptron_OR_bias = task06.PerceptronBias()
+    
+    perceptron_AND_bias.train(epochs, dataset_AND, learning_rate)
+    perceptron_OR_bias.train(epochs, dataset_OR, learning_rate)
 
-    model_AND_sigmoid = PerceptronMulSigmoid(2)
-    model_OR_sigmoid = PerceptronMulSigmoid(2)
 
-    loss_hist_AND = train_for_epochs_loss_record(model_AND_sigmoid, 100000, AND_dataset, single_step_sigmoid, 0.1)[1]
-    loss_hist_OR = train_for_epochs_loss_record(model_OR_sigmoid, 100000, OR_dataset, single_step_sigmoid, 0.1)[1]
+    perceptron_AND_sigmoid = task06.PerceptronBias()
+    perceptron_OR_sigmoid = task06.PerceptronBias()
+    
+    perceptron_AND_sigmoid.train(epochs, dataset_AND, learning_rate)
+    perceptron_OR_sigmoid.train(epochs, dataset_OR, learning_rate)
 
-    # tests
-    print(f"AND for 1 and 1: {model_AND_sigmoid.return_result([1, 1])}")
-    print(f"AND for 0 and 1: {model_AND_sigmoid.return_result([0, 1])}")
-    print(f"AND for 1 and 0: {model_AND_sigmoid.return_result([1, 0])}")
-    print(f"AND for 0 and 0: {model_AND_sigmoid.return_result([0, 0])}")
-    plot(epochs, loss_hist_AND)
+    # bias
+    print(f"Bias - AND for 1 and 1: {perceptron_AND_bias.guess(1, 1)}")
+    print(f"Bias - AND for 0 and 1: {perceptron_AND_bias.guess(0, 1)}")
+    print(f"Bias - AND for 1 and 0: {perceptron_AND_bias.guess(1, 0)}")
+    print(f"Bias - AND for 0 and 0: {perceptron_AND_bias.guess(0, 0)}")
 
-    print(f"OR for 1 and 1: {model_OR_sigmoid.return_result([1, 1])}")
-    print(f"OR for 0 and 1: {model_OR_sigmoid.return_result([0, 1])}")
-    print(f"OR for 1 and 0: {model_OR_sigmoid.return_result([1, 0])}")
-    print(f"OR for 0 and 0: {model_OR_sigmoid.return_result([0, 0])}")
-    plot(epochs, loss_hist_OR)
+    print(f"Bias - OR for 1 and 1: {perceptron_OR_bias.guess(1, 1)}")
+    print(f"Bias - OR for 0 and 1: {perceptron_OR_bias.guess(0, 1)}")
+    print(f"Bias - OR for 1 and 0: {perceptron_OR_bias.guess(1, 0)}")
+    print(f"Bias - OR for 0 and 0: {perceptron_OR_bias.guess(0, 0)}")
 
-    # Result:
-    """
-    AND for 1 and 1: 0.972004012393997
-    AND for 0 and 1: 0.023605103518596706
-    AND for 1 and 0: 0.023605075201399338
-    AND for 0 and 0: 1.683374358602646e-05
-    OR for 1 and 1: 0.9999986179616207
-    OR for 0 and 1: 0.9864879046325283
-    OR for 1 and 0: 0.9943178294398299
-    OR for 0 and 0: 0.01735000421397507
-    """
-    # when compared with task06, the values are much closer to the expected ones.
+    # sigmoid
+    print(f"Sigmoid - AND for 1 and 1: {perceptron_AND_sigmoid.guess(1, 1)}")
+    print(f"Sigmoid - AND for 0 and 1: {perceptron_AND_sigmoid.guess(0, 1)}")
+    print(f"Sigmoid - AND for 1 and 0: {perceptron_AND_sigmoid.guess(1, 0)}")
+    print(f"Sigmoid - AND for 0 and 0: {perceptron_AND_sigmoid.guess(0, 0)}")
 
-if __name__ == "__main__":
+    print(f"Sigmoid - OR for 1 and 1: {perceptron_OR_sigmoid.guess(1, 1)}")
+    print(f"Sigmoid - OR for 0 and 1: {perceptron_OR_sigmoid.guess(0, 1)}")
+    print(f"Sigmoid - OR for 1 and 0: {perceptron_OR_sigmoid.guess(1, 0)}")
+    print(f"Sigmoid - OR for 0 and 0: {perceptron_OR_sigmoid.guess(0, 0)}")
+
+    losses_list = [perceptron_AND_bias.return_loss_list(), perceptron_OR_bias.return_loss_list(), perceptron_AND_sigmoid.return_loss_list(), perceptron_OR_sigmoid.return_loss_list()]
+    x = [i for i in range(0, len(losses_list[0]))]
+    y = losses_list
+    plt.xlabel("Epochs")
+    plt.title("Loss")
+    for i in range(len(y)):
+        plt.plot(x, y[i])
+    plt.show()
+
+    # There appears to be a gradual decline in the loss that gradually reaches close to 0, but there is no big difference in how the loss gets reduced due to the implementation of the sigmoid
+    
+if __name__ == '__main__':
     main()

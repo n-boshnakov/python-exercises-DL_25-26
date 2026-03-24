@@ -7,7 +7,7 @@ class TestBias(unittest.TestCase):
     def test_when_100_epochs_complete_on_and_gate_and_weights_are_8_and_bias_is_added_then_error_decreased(self):
         # Arrange
         dataset_AND = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
-        epochs = 10000
+        epochs = 100
         learning_rate = 0.001
 
         perceptron_AND = task05.Perceptron(8, 8)
