@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from Week_01.tasks.perceptron import task05
+from Week_01.tasks.perceptron import task01, task05
 
 class TestGates(unittest.TestCase):
 

@@ -37,7 +37,6 @@ class PerceptronBias():
     def train(self, epochs, dataset, learning_rate=0.001):
         for n in range(epochs):
             self.single_step(dataset, learning_rate)
-            pass
 
     def guess(self, input1, input2):
         return (self.w1*input1 + self.w2*input2 + self.bias)
@@ -67,8 +66,7 @@ def main():
     print(f"OR for 1 and 0: {perceptron_OR.guess(1, 0)}")
     print(f"OR for 0 and 0: {perceptron_OR.guess(0, 0)}")
 
-    # What do you notice about the confidence the models have in their predicted values?
-    # There appears to be an issue with learning, depending on which number is first - 0 or 1. If it's 0, then the answer is always less than 1, if it's 1 - positive.
+    # What has changed in comparison to the previous task?
 
 if __name__ == '__main__':
     main()

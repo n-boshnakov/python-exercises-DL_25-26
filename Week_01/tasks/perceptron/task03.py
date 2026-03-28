@@ -24,22 +24,27 @@ def single_step(w, dataset, learning_rate=1):
 def main():
     rng = np.random.default_rng(42)
     dataset = task01.create_dataset(6)
-    w = rng.uniform(0, 10)
+    random_value = rng.uniform(0, 10)
+    w1 = random_value
+    w2 = random_value
 
-    calculate_derivative(w, dataset)
-    print(w)
+    calculate_derivative(w1, dataset)
+    print(w1)
 
     # with no learning_rate (equal to 1)
     # results are abysmal, the model overfits and doesn't learn anything
     for n in range(10):
-        w = single_step(w, dataset)
+        w1 = single_step(w1, dataset)
+
+    print(w1)
 
     # with learning_rate of 0.001
     # after 10 iterations, the model is now closer to the answer (~6.7 vs ~7.7 originally)
     for n in range(10):
-        w = single_step(w, dataset, 0.001)
+        w2 = single_step(w2, dataset, 0.001)
 
-    print(w)
+
+    print(w2)
 
 if __name__ == '__main__':
     main()
