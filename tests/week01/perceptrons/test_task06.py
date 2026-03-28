@@ -10,14 +10,14 @@ class TestBias(unittest.TestCase):
         epochs = 100
         learning_rate = 0.001
 
-        perceptron_AND = task05.Perceptron(8, 8)
-        perceptron_AND_bias = task06.PerceptronBias(8, 8)
+        perceptron_AND = task05.Perceptron(dataset_AND, 8, 8)
+        perceptron_AND_bias = task06.PerceptronBias(dataset_AND, 8, 8)
         
         # Act
-        perceptron_AND.train(epochs, dataset_AND, learning_rate)
-        expected = perceptron_AND.calc_loss(dataset_AND)
-        perceptron_AND_bias.train(epochs, dataset_AND, learning_rate)
-        actual = perceptron_AND_bias.calc_loss(dataset_AND)
+        perceptron_AND.train(epochs, learning_rate)
+        expected = perceptron_AND.calc_loss()
+        perceptron_AND_bias.train(epochs, learning_rate)
+        actual = perceptron_AND_bias.calc_loss()
         # Assert
 
         self.assertGreater(expected, actual)

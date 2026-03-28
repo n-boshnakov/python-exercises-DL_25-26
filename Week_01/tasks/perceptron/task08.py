@@ -6,43 +6,45 @@ except ImportError:
 
 
 class PerceptronSigmoid():
-    def __init__(self, w1=task01.initialize_weights(0, 10), w2=task01.initialize_weights(0, 10)):
+    def __init__(self, dataset, w1=task01.initialize_weights(0, 10), w2=task01.initialize_weights(0, 10)):
         self.w1 = w1
         self.w2 = w2
+        self.dataset = dataset
         self.bias = task01.initialize_weights(0, 1)
         self.loss_list = []
 
-    def calc_loss(self, dataset, eps=0):
+    def calc_loss(self, w1_eps: float=0, w2_eps: float=0, b_eps: float=0):
         sum = 0
-        for (x, y, z) in dataset:
-            sum += (task07.sigmoid((x * (self.w1 + eps) + y * (self.w2 + eps)) + self.bias) - z)**2
+        for (x, y, z) in self.dataset:
+            sum += (task07.sigmoid((x * (self.w1 + w1_eps) + y * (self.w2 + w2_eps)) + (self.bias + b_eps)) - z)**2
     
-        return sum / len(dataset)
+        return sum / len(self.dataset)
     
-    def calc_derivative(self, dataset, eps=0.01):
-        loss1 = self.calc_loss(dataset)
-        loss2 = self.calc_loss(dataset, eps)
-        self.loss_list.append((loss2 - loss1) / eps)
+    def calc_derivative(self, w1_eps: float=0, w2_eps: float=0, b_eps: float=0):
+        loss1 = self.calc_loss()
+        loss2 = self.calc_loss(w1_eps, w2_eps, b_eps)
+        self.loss_list.append((loss2 - loss1) / (w1_eps if w1_eps != 0 else w2_eps if w2_eps != 0 else b_eps))
 
-        return (loss2 - loss1) / eps
+        return (loss2 - loss1) / (w1_eps if w1_eps != 0 else w2_eps if w2_eps != 0 else b_eps)
     
-    def single_step(self, dataset, learning_rate):
-        print(f"Loss before: {self.calc_loss(dataset)}")
-        derivative = self.calc_derivative(dataset)
-        self.w1 -= derivative * learning_rate
-        self.w2 -= derivative * learning_rate
-        print(f"Loss after: {self.calc_loss(dataset)}")
+    def single_step(self, learning_rate):
+        print(f"Loss before: {self.calc_loss()}")
+        d_w1 = self.calc_derivative(w1_eps = 0.001)
+        d_w2 = self.calc_derivative(w2_eps = 0.001)
+        d_b = self.calc_derivative(b_eps = 0.001)
+
+        self.w1 -= d_w1 * learning_rate
+        self.w2 -= d_w2 * learning_rate
+        self.bias -= d_b * learning_rate
+        print(f"Loss after: {self.calc_loss()}")
         return self.w1, self.w2
 
-    def train(self, epochs, dataset, learning_rate=0.001):
+    def train(self, epochs, learning_rate=0.001):
         for n in range(epochs):
-            self.single_step(dataset, learning_rate)
+            self.single_step(learning_rate)
             pass
 
-    def guess(self, input1, input2):
-        sum = 0
-        sum += self.w1*input1 + self.bias
-        sum += self.w2*input2 + self.bias
+    def predict(self, input1, input2):
         return (task07.sigmoid((self.w1*input1 + self.w2*input2) + self.bias))
     
     def return_loss_list(self):
@@ -51,43 +53,43 @@ class PerceptronSigmoid():
 def main():
     dataset_AND = [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 1)]
     dataset_OR = [(0, 0, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
-    epochs = 100000
+    epochs = 100
     learning_rate = 0.001
 
-    perceptron_AND_bias = task06.PerceptronBias()
-    perceptron_OR_bias = task06.PerceptronBias()
+    perceptron_AND_bias = task06.PerceptronBias(dataset_AND)
+    perceptron_OR_bias = task06.PerceptronBias(dataset_OR)
     
-    perceptron_AND_bias.train(epochs, dataset_AND, learning_rate)
-    perceptron_OR_bias.train(epochs, dataset_OR, learning_rate)
+    perceptron_AND_bias.train(epochs, learning_rate)
+    perceptron_OR_bias.train(epochs, learning_rate)
 
 
-    perceptron_AND_sigmoid = task06.PerceptronBias()
-    perceptron_OR_sigmoid = task06.PerceptronBias()
+    perceptron_AND_sigmoid = PerceptronSigmoid(dataset_AND)
+    perceptron_OR_sigmoid = PerceptronSigmoid(dataset_OR)
     
-    perceptron_AND_sigmoid.train(epochs, dataset_AND, learning_rate)
-    perceptron_OR_sigmoid.train(epochs, dataset_OR, learning_rate)
+    perceptron_AND_sigmoid.train(epochs, learning_rate)
+    perceptron_OR_sigmoid.train(epochs, learning_rate)
 
     # bias
-    print(f"Bias - AND for 1 and 1: {perceptron_AND_bias.guess(1, 1)}")
-    print(f"Bias - AND for 0 and 1: {perceptron_AND_bias.guess(0, 1)}")
-    print(f"Bias - AND for 1 and 0: {perceptron_AND_bias.guess(1, 0)}")
-    print(f"Bias - AND for 0 and 0: {perceptron_AND_bias.guess(0, 0)}")
+    print(f"Bias - AND for 1 and 1: {perceptron_AND_bias.predict(1, 1)}")
+    print(f"Bias - AND for 0 and 1: {perceptron_AND_bias.predict(0, 1)}")
+    print(f"Bias - AND for 1 and 0: {perceptron_AND_bias.predict(1, 0)}")
+    print(f"Bias - AND for 0 and 0: {perceptron_AND_bias.predict(0, 0)}")
 
-    print(f"Bias - OR for 1 and 1: {perceptron_OR_bias.guess(1, 1)}")
-    print(f"Bias - OR for 0 and 1: {perceptron_OR_bias.guess(0, 1)}")
-    print(f"Bias - OR for 1 and 0: {perceptron_OR_bias.guess(1, 0)}")
-    print(f"Bias - OR for 0 and 0: {perceptron_OR_bias.guess(0, 0)}")
+    print(f"Bias - OR for 1 and 1: {perceptron_OR_bias.predict(1, 1)}")
+    print(f"Bias - OR for 0 and 1: {perceptron_OR_bias.predict(0, 1)}")
+    print(f"Bias - OR for 1 and 0: {perceptron_OR_bias.predict(1, 0)}")
+    print(f"Bias - OR for 0 and 0: {perceptron_OR_bias.predict(0, 0)}")
 
     # sigmoid
-    print(f"Sigmoid - AND for 1 and 1: {perceptron_AND_sigmoid.guess(1, 1)}")
-    print(f"Sigmoid - AND for 0 and 1: {perceptron_AND_sigmoid.guess(0, 1)}")
-    print(f"Sigmoid - AND for 1 and 0: {perceptron_AND_sigmoid.guess(1, 0)}")
-    print(f"Sigmoid - AND for 0 and 0: {perceptron_AND_sigmoid.guess(0, 0)}")
+    print(f"Sigmoid - AND for 1 and 1: {perceptron_AND_sigmoid.predict(1, 1)}")
+    print(f"Sigmoid - AND for 0 and 1: {perceptron_AND_sigmoid.predict(0, 1)}")
+    print(f"Sigmoid - AND for 1 and 0: {perceptron_AND_sigmoid.predict(1, 0)}")
+    print(f"Sigmoid - AND for 0 and 0: {perceptron_AND_sigmoid.predict(0, 0)}")
 
-    print(f"Sigmoid - OR for 1 and 1: {perceptron_OR_sigmoid.guess(1, 1)}")
-    print(f"Sigmoid - OR for 0 and 1: {perceptron_OR_sigmoid.guess(0, 1)}")
-    print(f"Sigmoid - OR for 1 and 0: {perceptron_OR_sigmoid.guess(1, 0)}")
-    print(f"Sigmoid - OR for 0 and 0: {perceptron_OR_sigmoid.guess(0, 0)}")
+    print(f"Sigmoid - OR for 1 and 1: {perceptron_OR_sigmoid.predict(1, 1)}")
+    print(f"Sigmoid - OR for 0 and 1: {perceptron_OR_sigmoid.predict(0, 1)}")
+    print(f"Sigmoid - OR for 1 and 0: {perceptron_OR_sigmoid.predict(1, 0)}")
+    print(f"Sigmoid - OR for 0 and 0: {perceptron_OR_sigmoid.predict(0, 0)}")
 
     losses_list = [perceptron_AND_bias.return_loss_list(), perceptron_OR_bias.return_loss_list(), perceptron_AND_sigmoid.return_loss_list(), perceptron_OR_sigmoid.return_loss_list()]
     x = [i for i in range(0, len(losses_list[0]))]
@@ -98,7 +100,9 @@ def main():
         plt.plot(x, y[i])
     plt.show()
 
-    # There appears to be a gradual decline in the loss that gradually reaches close to 0, but there is no big difference in how the loss gets reduced due to the implementation of the sigmoid
+    # The sigmoid makes the predictions much closer to the expected values; 
+    # The loss plot shows the gradual decline and eventual reaching of the final values for the weights;
+    # Due to the sigmoid function, the values for the sigmoid perceptrons are much smaller 
     
 if __name__ == '__main__':
     main()

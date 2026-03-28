@@ -51,6 +51,8 @@ def main():
     perceptron_AND = Perceptron(dataset_AND)
     perceptron_OR = Perceptron(dataset_OR)
     
+    print(perceptron_AND.w1)
+    print(perceptron_AND.w2)
     perceptron_AND.train(epochs, learning_rate)
     perceptron_OR.train(epochs, learning_rate)
     # General forms of the two models:
@@ -67,7 +69,7 @@ def main():
     print(f"OR for 0 and 0: {perceptron_OR.predict(0, 0)}")
 
     # What do you notice about the confidence the models have in their predicted values?
-
+    # When it comes to the AND perceptron, it has learned lower values overall (1 and 1 returns 0.65), while the OR perceptron has learned higher overall values (1 and 1 returns 1.32)
 
 if __name__ == '__main__':
     main()

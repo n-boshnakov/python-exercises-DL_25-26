@@ -10,14 +10,14 @@ class TestSigmoidLearning(unittest.TestCase):
         epochs = 100
         learning_rate = 0.001
 
-        perceptron_AND = task06.PerceptronBias(8, 8)
-        perceptron_AND_sigmoid = task08.PerceptronSigmoid(8, 8)
+        perceptron_AND = task06.PerceptronBias(dataset_AND, 8, 8)
+        perceptron_AND_sigmoid = task08.PerceptronSigmoid(dataset_AND, 8, 8)
         
         # Act
-        perceptron_AND.train(epochs, dataset_AND, learning_rate)
-        expected = perceptron_AND.calc_loss(dataset_AND)
-        perceptron_AND_sigmoid.train(epochs, dataset_AND, learning_rate)
-        actual = perceptron_AND_sigmoid.calc_loss(dataset_AND)
+        perceptron_AND.train(epochs, learning_rate)
+        expected = perceptron_AND.calc_loss()
+        perceptron_AND_sigmoid.train(epochs, learning_rate)
+        actual = perceptron_AND_sigmoid.calc_loss()
         # Assert
 
         self.assertGreater(expected, actual)
