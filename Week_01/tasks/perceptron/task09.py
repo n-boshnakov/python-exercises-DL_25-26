@@ -11,7 +11,6 @@ def main():
     epochs = 100000
     learning_rate = 0.01
 
-    # This should have worked, no idea why it didn't. I tried to solve the task by building a multi-layer perceptron (https://elcaiseri.medium.com/building-a-multi-layer-perceptron-from-scratch-with-numpy-e4cee82ab06d) but hit a wall with the implementation
     perceptron_NAND = task08.PerceptronSigmoid(NAND_dataset, task01.initialize_weights(-1, 1), task01.initialize_weights(-1, 1))
 
     perceptron_NAND.train(epochs, learning_rate)
