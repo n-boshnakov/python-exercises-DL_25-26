@@ -4,17 +4,17 @@ from Week_01.tasks.perceptron import task06, task08, task10
 
 class TestXORGate(unittest.TestCase):
 
-    def test_when_input_is_1_and_1_then_trained_XOR_gate_returns_uner_0_5(self):
+    def test_when_input_is_1_and_1_then_trained_XOR_gate_returns_under_0_5(self):
         # Arrange
         XOR_dataset = [(0, 0, 1), (0, 1, 1), (1, 0, 1), (1, 1, 0)]        
-        perceptron_XOR = task10.PerceptronXOR(XOR_dataset)
-        epochs = 1000
-        learning_rate = 0.001
+        perceptron_XOR = task10.ModelXOR(XOR_dataset)
+        epochs = 10000
+        learning_rate = 0.1
         expected = 0.5
 
         perceptron_XOR.train(epochs, learning_rate)
         # Act
-        actual = perceptron_XOR.forward(0, 0)
+        actual = perceptron_XOR.predict(1, 1)
 
         # Assert
-        self.assertLesser(actual, expected)
+        self.assertGreater(expected, actual)
