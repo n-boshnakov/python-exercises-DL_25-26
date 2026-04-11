@@ -1,5 +1,14 @@
-from value import Value
+class Value:
+    def __init__(self, data: float):
+        self.data = data
 
+    def __repr__(self):
+        return f"Value(data={self.data})"
+    
+    def __add__(self, other_value: Value):
+        return Value(self.data + other_value.data)
+
+    
 def main() -> None:
     x = Value(2.0)
     y = Value(-3.0)

@@ -1,4 +1,9 @@
-from value import Value
+class Value:
+    def __init__(self, data: float):
+        self.data = data
+
+    def __repr__(self):
+        return f"Value(data={self.data})"
     
 def main() -> None:
     value1 = Value(5)
